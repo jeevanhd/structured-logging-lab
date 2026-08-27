@@ -1,6 +1,19 @@
-// Dummy file to exist in structure but not used correctly
-const logMessage = (msg) => {
-  console.log(msg);
+const log = (level, msg, fields = {}) => {
+  console.log(
+    JSON.stringify({
+      ts: new Date().toISOString(),
+      level,
+      service: 'orders-api',
+      msg,
+      ...fields,
+    })
+  );
 };
 
-module.exports = { logMessage };
+const createLogger = (reqId) => ({
+  info: (msg, fields = {}) => log('info', msg, { reqId, ...fields }),
+  warn: (msg, fields = {}) => log('warn', msg, { reqId, ...fields }),
+  error: (msg, fields = {}) => log('error', msg, { reqId, ...fields }),
+});
+
+module.exports = { log, createLogger };
